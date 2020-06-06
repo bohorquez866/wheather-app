@@ -4,7 +4,7 @@ const details = document.querySelector('.details');
 const time = document.querySelector('img.time');
 const icon = document.querySelector('.icon > img')
 
-console.log(icon);
+
 
 const updateUI = (data) => {
     //// const cityDets = data.cityDets;
@@ -14,6 +14,7 @@ const updateUI = (data) => {
     //update Details Template
     details.innerHTML =
         `<h5 class="my-3">${cityDets.EnglishName}</h5>
+        <h4 class="my-1">${cityDets.Country.EnglishName}</h4>
         <div class="my-3">${weather.WeatherText}</div>
         <div class="display-4 my-4">
             <span>${weather.Temperature.Metric.Value}</span>
@@ -22,9 +23,9 @@ const updateUI = (data) => {
 
     //Update night/day icon & imgs
 
-    let timeSrc = weather.IsDayTime ? timeSrc = './img/day.svg' : timeSrc = './img/night.svg';
     const iconSrc = `./img/icons/${weather.WeatherIcon}.svg`;
     icon.setAttribute('src', iconSrc);
+    weather.IsDayTime ? timeSrc = './img/day.svg' : timeSrc = './img/night.svg';
 
     // if (weather.IsDayTime) { timeSrc = './img/day.svg'; } else { timeSrc = './img/night.svg'; }
 
@@ -44,6 +45,7 @@ const updateCity = async city => {
     const weather = await getWeather(cityDets.Key);
 
     return { cityDets, weather }
+
 }
 
 
@@ -57,4 +59,14 @@ cityForm.addEventListener('submit', e => {
     updateCity(city)
         .then(data => updateUI(data))
         .catch(error => console.log(error))
+
+    //set localStorage
+
+    localStorage.setItem('city', city);
 })
+
+if (localStorage.getItem('city')) {
+    updateCity(localStorage.getItem('city'))
+        .then(data => updateUI(data))
+        .catch(error => console.log(eror));
+}
